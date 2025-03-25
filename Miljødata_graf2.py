@@ -11,7 +11,6 @@ times = []
 temps = []
 wind_speeds = []
 precipitations = []
-uv_indexes = []
 
 for entry in data["properties"]["timeseries"]:
     times.append(entry["time"])
@@ -20,38 +19,48 @@ for entry in data["properties"]["timeseries"]:
     temps.append(details.get("air_temperature", None))
     wind_speeds.append(details.get("wind_speed", None))
     precipitations.append(entry["data"].get("next_1_hours", {}).get("details", {}).get("precipitation_amount", 0))
-    uv_indexes.append(entry["data"].get("instant", {}).get("details", {}).get("ultraviolet_index_clear_sky", 0))
 
 # Opprett DataFrame
 df = pd.DataFrame({
     "Time": pd.to_datetime(times),
     "Temperature (°C)": temps,
     "Wind Speed (m/s)": wind_speeds,
-    "Precipitation (mm)": precipitations,
-    "UV Index": uv_indexes
+    "Precipitation (mm)": precipitations
 })
 
 # Sorter etter tid
 df = df.sort_values("Time")
 
-# Plot værdata
-plt.figure(figsize=(12, 6))
+# Opprett figur med 3 separate grafer
+fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(10, 12), sharex=True)
 
-plt.plot(df["Time"], df["Temperature (°C)"], marker="o", linestyle="-", label="Temperatur (°C)", color="b")
-plt.plot(df["Time"], df["Wind Speed (m/s)"], marker="s", linestyle="--", label="Vindhastighet (m/s)", color="g")
-plt.plot(df["Time"], df["Precipitation (mm)"], marker="^", linestyle=":", label="Nedbør (mm)", color="c")
-plt.plot(df["Time"], df["UV Index"], marker="d", linestyle="-.", label="UV-indeks", color="m")
+# Temperatur-plot
+axes[0].plot(df["Time"], df["Temperature (°C)"], marker="o", linestyle="-", color="b")
+axes[0].set_ylabel("Temperatur (°C)")
+axes[0].set_title("Temperaturutvikling i Trondheim")
+axes[0].grid()
 
-# Formatering
-plt.xlabel("Tid")
-plt.ylabel("Målinger")
-plt.title("Værdata for Trondheim")
+# Vindhastighet-plot
+axes[1].plot(df["Time"], df["Wind Speed (m/s)"], marker="s", linestyle="--", color="g")
+axes[1].set_ylabel("Vindhastighet (m/s)")
+axes[1].set_title("Vindhastighet i Trondheim")
+axes[1].grid()
+
+# Nedbør-plot
+axes[2].plot(df["Time"], df["Precipitation (mm)"], marker="^", linestyle=":", color="c")
+axes[2].set_ylabel("Nedbør (mm)")
+axes[2].set_title("Nedbør i Trondheim")
+axes[2].set_xlabel("Tid")
+axes[2].grid()
+
+# Rotér x-aksen for bedre lesbarhet
 plt.xticks(rotation=45)
-plt.legend()
-plt.grid()
 
-# Vis plot
+# Juster mellomrom mellom plott
+plt.tight_layout()
+
+# Vis grafer
 plt.show()
 
-# Skriv ut første 10 rader som tabell for å vise verdier
+# Skriv ut første 10 rader for å vise data
 print(df.head(10))
