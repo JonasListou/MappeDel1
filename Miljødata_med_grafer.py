@@ -69,9 +69,9 @@ try:
 
     # Plotting
     fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(10, 12), sharex=True)
-    axes[0].plot(df["Time"], df["Temperature (°C)"], marker="o", linestyle="-", color="b", label="Temperatur")
-    axes[1].plot(df["Time"], df["Wind Speed (m/s)"], marker="s", linestyle="--", color="g", label="Vindhastighet")
-    axes[2].plot(df["Time"], df["Precipitation (mm)"], marker="^", linestyle=":", color="c", label="Nedbør")
+    axes[0].plot(df["Time"], df["Temperature (°C)"], marker="o", linestyle="-", color="#377eb8", label="Temperatur")
+    axes[1].plot(df["Time"], df["Wind Speed (m/s)"], marker="s", linestyle="--", color="#ff7f00", label="Vindhastighet")
+    axes[2].plot(df["Time"], df["Precipitation (mm)"], marker="^", linestyle=":", color="#4daf4a", label="Nedbør")
     
     for ax in axes:
         ax.legend()
